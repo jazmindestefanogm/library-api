@@ -1,0 +1,73 @@
+# Contrato de la Library API, en formato OpenAPI 3.0.
+# Se sirve en http://localhost:3000/docs con Swagger UI. Guardá el archivo y recargá la página.
+#
+# Regla de toda la clase: el contrato de un endpoint se escribe ACÁ antes de programarlo.
+
+openapi: 3.0.3
+
+info:
+  title: Library API
+  version: 1.0.0
+  description: |
+    Books, authors and loans of a library.
+
+    **Conventions**
+    - All requests and responses are JSON.
+    - Dates use the `YYYY-MM-DD` format.
+    - All errors have the shape `{ "error": "..." }` (see the `Error` schema).
+
+servers:
+  - url: http://localhost:3000
+
+# ──────────────────────────────────────────────────────────────
+# Endpoints. Un bloque por ruta; dentro, un bloque por verbo.
+# Empezá por /authors. Abajo hay una plantilla comentada para copiar.
+# ──────────────────────────────────────────────────────────────
+paths: {}
+
+# Plantilla de un endpoint (descomentá, pegá dentro de `paths:` y completá):
+#
+#  /resource/{id}:
+#    get:
+#      summary: What it does, in one line
+#      tags: [Resource]
+#      parameters:
+#        - name: id
+#          in: path
+#          required: true
+#          schema: { type: integer }
+#      requestBody:                       # solo en POST / PUT / PATCH
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: "#/components/schemas/NewResource"
+#      responses:
+#        "200":
+#          description: Resource found
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/Resource"
+#        "404":
+#          description: Resource not found
+#          content:
+#            application/json:
+#              schema:
+#                $ref: "#/components/schemas/Error"
+#              example:
+#                error: Resource not found
+
+# ──────────────────────────────────────────────────────────────
+# Schemas: la forma de los datos. Tienen que coincidir con las
+# tablas de la base y con las interfaces de src/types/.
+# ──────────────────────────────────────────────────────────────
+components:
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: Book not found
