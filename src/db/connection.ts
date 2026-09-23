@@ -3,9 +3,9 @@ import { Sequelize } from "sequelize";
 // Conexión a PostgreSQL.
 // Antes de usarla, creá en pgAdmin una base vacía llamada `library`.
 // 👇 Cambiá estos datos por los de tu instalación de Postgres.
-const DATABASE = "library";
+const DATABASE = "Library";
 const USER = "postgres";
-const PASSWORD = "postgres"; // la que elegiste al instalar Postgres
+const PASSWORD = "gm2dev"; // la que elegiste al instalar Postgres
 const HOST = "localhost";
 const PORT = 5432;
 
