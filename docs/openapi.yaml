@@ -23,7 +23,82 @@ servers:
 # Endpoints. Un bloque por ruta; dentro, un bloque por verbo.
 # Empezá por /authors. Abajo hay una plantilla comentada para copiar.
 # ──────────────────────────────────────────────────────────────
-paths: {}
+paths: 
+  /authors:
+    get:
+      summary: gets a list of authors
+      responses:
+        "200":
+          description: Resource found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Authors"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Resource not found
+  /authors/{id}:
+    get:
+      summary: gets an author by its id
+      responses:
+        "200":
+          description: Resource found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Resource not found
+    delete:
+      summary: deletes an author by its id
+      responses:
+        "204":
+          description: author deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Resource not found
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Resource not found
+        "409":
+          description: author has books
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Cannot delete author that has books
+  /books:
+    get:
+      summary: gets a list of books
+      responses:
+        "200": 
+          description: Resource found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookPage"
 
 # Plantilla de un endpoint (descomentá, pegá dentro de `paths:` y completá):
 #
@@ -71,3 +146,123 @@ components:
         error:
           type: string
           example: Book not found
+    Author:
+      type: object
+      required: [id, name, nationality]
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Julian Kartun
+        nationality:
+          type: string
+          example: Argentino
+    Authors:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: Author[]
+          example: [{id: 1, name: maria, nationality: argentine}, {id: 2, name: claudio, nationality: argentine}]
+    NewBook:
+      type: object
+      required: [id, title, year]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Harry Potter and the Philosopher's Stone
+        year:
+          type: integer
+          minimum: 1000
+          maximum: 2100
+          example: 1991
+        author_id:
+          type: integer
+          example: 2
+    UpdateBook:
+      type: object
+      required: [id, title, year]
+      properties:
+        title:
+          type: string
+          example: Harry Potter and the Philosopher's Stone
+        year:
+          type: integer
+          example: 1991
+        author_id:
+          type: integer
+          example: 2
+    Book:
+      type: object
+      required: [id, title, year, author_id, available]
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Harry Potter and the Philosopher's Stone
+        year:
+          type: integer
+          example: 1991
+        author_id:
+          type: integer
+          example: 2
+        available:
+          type: bool
+          example: false
+
+    BookPage:
+      type: object
+      properties: 
+        data:
+          type: Book[]
+          example: [{id: 1, title: Harry Potter and the Philosopher's Stone, year: 1991, author_id: 2, available: false}]
+        total:
+          type: integer
+          example: 650
+        page:
+          type: integer
+          example: 5
+        limit:
+          type: integer
+          example: 10
+    Date:
+      type: string
+      description: YYYY-MM-DD
+      example: 2026-04-02
+    Loan:
+      type: object
+      required: [id, book_id, member_name, loan_date]
+      properties:
+        id:
+          type: integer
+          example: 1
+        book_id:
+          type: integer
+          example: 5
+        member_name:
+          type: string
+          example: Charles
+        loan_date:
+          type: Date
+          example: 2025-12-13
+        return_date:
+          type: Date
+          nullable: true
+          example: 2026-09-12
+    NewLoan:
+      type: object
+      required: [book_id, member_name]
+      properties:
+        book_id:
+          type: integer
+          example: 5
+        member_name:
+          type: string
+          nullable: false
+          example: Charles
