@@ -23,7 +23,242 @@ servers:
 # Endpoints. Un bloque por ruta; dentro, un bloque por verbo.
 # Empezá por /authors. Abajo hay una plantilla comentada para copiar.
 # ──────────────────────────────────────────────────────────────
-paths: {}
+paths:
+  /authors/{id}:
+    get:
+      summary: Obtiene los detalles de un autor por su ID
+      tags:
+        - Author
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Autor encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: El autor no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /authors:
+    get:
+      summary: Obtiene los detalles todos los autores
+      tags:
+        - Author
+      responses:
+        '200':
+          description: Autor encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+        '404':
+          description: El autor no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /books/{id}:
+    get:
+      summary: Obtiene los detalles de un libro por su ID
+      tags:
+        - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Libro encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: El Libro no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Borra un libro por su ID
+      tags:
+        - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: El id unico del libro
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Libro borrado 
+        '404':
+          description: Libro no encontrado
+    put:
+      summary: Reemplazar libro
+      tags:
+        - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBook'
+      responses:
+        '200':
+          description: Libro reemplazado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '201':
+          description: Libro creado exitosamente en ese id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+    patch:
+      summary: Actualizar Libro
+      tags:
+        - Book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBook'
+      responses:
+        '200':
+          description: Libro actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+
+  
+  
+  /books:
+    get:
+      summary: Obtiene los detalles de los libros
+      tags:
+        - Book
+      responses:
+        '200':
+          description: Libro encontrado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: El Libro no existe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Crea un nuevo libro
+      tags:
+        - Book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewBook'
+      responses:
+        '201':
+          description: Libro creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+
+      
+
+  
+  
+  
+  
+  /loans/{id}:
+      get:
+        summary: Obtiene los detalles de un libro prestado por su ID
+        tags:
+          - Loan
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          '200':
+            description:  prestamo encontrado exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Loan'
+          '404':
+            description: El prestamo no existe
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  
+  /loans:
+      get:
+        summary: Obtiene los detalles de  los prestamos
+        tags:
+          - Loan
+        responses:
+          '200':
+            description:  prestamo encontrado exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Loan'
+          '404':
+            description: El prestamo no existe
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+
+
+
+
+
+
+
+
+
 
 # Plantilla de un endpoint (descomentá, pegá dentro de `paths:` y completá):
 #
@@ -71,3 +306,154 @@ components:
         error:
           type: string
           example: Book not found
+    
+    Author:
+      type: object
+      required: [id,name,nationality]
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Jorge Luis Borges
+        nationality:
+          type: string
+          example: Argentinean
+
+    Book:
+      type: object
+      required: [id,title,year,author_id,available]
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example:  Harry Potter y la piedra filosofal,
+        year:
+          type: integer
+          example: 1997
+        author_id:
+          type: integer
+          example: 1
+        available :
+          type: boolean
+          example : false
+    
+    Loan:
+      type: object
+      required: [id,book_id,member_name,loan_date,return_date]
+      properties:
+        id:
+          type: integer
+          example: 1
+        
+        book_id:
+          type: integer
+          example : 1
+        member_name:
+          type: string
+          example : Alan
+        loan_date:
+          type: string
+          example: 2021-06-06
+        return_date:
+          type : string || null
+          example : 2021-06-06 || null
+
+    NewLoan:
+        type: object
+        required: [book_id,member_name]
+        properties:
+          book_id:
+            type: integer
+            example: 1
+          
+          member_name:
+            type: "string"
+            example : Alan
+    
+    LoanReturn:
+        type: string
+        example:  2021-06-06
+
+
+    
+    NewBook:
+      type: object
+      required: [title,year,author_id]
+      properties:
+        title:
+          type : string
+          minimum: 1
+          maximum: 200
+          example : El Principito
+        
+        year:
+            type : integer
+            minimum: 1000
+            maximum: 2100
+            example : 2026
+        
+        author_id:
+          type : integer
+          example : 1
+
+    UpdateBook:
+        type: object
+        required: [title,year,author_id]
+        properties:
+          title:
+            type : string
+            minimum: 1
+            maximum: 200
+            example : El Principito
+          
+          year:
+              type : integer
+              minimum: 1000
+              maximum: 2100
+              example : 2026
+          
+          author_id:
+            type : integer
+            example : 1
+    
+    BookPage:
+        type: object
+        required: [data,total,page,limit]
+        properties:
+          total:
+            type: integer
+          page:
+            type: integer
+            minimum: 1
+            example: 1
+          limit:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
+          data:
+            type: array
+            items:
+              type: object
+              required: [id,title,year,author_id,available]
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                title:
+                  type: string
+                  example: "Harry Potter y la piedra filosofal"
+                year:
+                  type: integer
+                  example: 1997
+                author_id:
+                  type: integer
+                  example: 1
+                available:
+                  type: boolean
+                  example: false
+
