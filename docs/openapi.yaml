@@ -166,22 +166,37 @@ paths:
   
   /books:
     get:
-      summary: Obtiene los detalles de los libros
-      tags:
-        - Book
-      responses:
-        '200':
-          description: Libro encontrado exitosamente
-          content:
-            application/json:
+          summary: Lista los libros con filtros y paginación
+          tags:
+            - Book
+          parameters:
+            - name: available
+              in: query
+              required: false
               schema:
-                $ref: '#/components/schemas/Book'
-        '404':
-          description: El Libro no existe
-          content:
-            application/json:
+                type: boolean
+            - name: page
+              in: query
+              required: false
               schema:
-                $ref: '#/components/schemas/Error'
+                type: integer
+                minimum: 1
+                default: 1
+            - name: limit
+              in: query
+              required: false
+              schema:
+                type: integer
+                minimum: 1
+                maximum: 100
+                default: 20
+          responses:
+            '200':
+              description: Página de libros
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/BookPage'
     post:
       summary: Crea un nuevo libro
       tags:
@@ -340,6 +355,11 @@ components:
         available :
           type: boolean
           example : false
+
+
+
+
+
     
     Loan:
       type: object

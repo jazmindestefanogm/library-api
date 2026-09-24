@@ -1,10 +1,13 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { findById } from '../repositories/books.repository.js'; 
+import { Router } from 'express';
+import { getById, list, create, replace, update, remove } from '../controllers/book.controller.js';
 
-const app = Router();
+const router = Router();
 
-app.get('/books/:id', async (req, res) => { 
-    const { id } = req.params; 
-    const items = await findById(Number(id))
-    res.json(items); 
-});
+router.get('/', list);
+router.get('/:id', getById);
+router.post('/', create);
+router.put('/:id', replace);
+router.patch('/:id', update);
+router.delete('/:id', remove);
+
+export default router;
