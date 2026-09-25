@@ -1,45 +1,38 @@
 import { Request, Response } from 'express';
-import {getBookByID,insertBook,patchBook,putBook,deleteBook,search,} from '../repositories/books.repository.js';
+import { createBookService, deleteBookService, getBookByIdService, listBooksService, replaceBookService, updateBookService } from '../services/books.service.js';
 
 export async function getById(req: Request, res: Response) {
-    const book = await getBookByID(Number(req.params.id));
-    if (!book) {
-        return res.status(404).json({ error: 'Book not found' });
-    }
-    res.json(book);
+    const result = await getBookByIdService(Number(req.params.id));
+    if (result === "BOOK_NOT_FOUND") return res.status(404).json({ error: "Book not found" });
+    return res.json(result);
 }
-
 export async function list(req: Request, res: Response) {
-    res.json(await search(req.query));
+    res.json(await listBooksService(req.query));
 }
 
 export async function create(req: Request, res: Response) {
-    const result = await insertBook(req.body);
-    res.status(201).json(result[0]);
+    const result = await createBookService(req.body);
+    if (result === "AUTHOR_NOT_FOUND") return res.status(404).json({ error: "Author not found" });
+    res.status(201).json(result);
 }
 
 export async function replace(req: Request, res: Response) {
-    const result = await putBook(req.body, Number(req.params.id));
-
-    if (result.length === 0) {
-        return res.status(404).json({ error: 'Book not found' });
-    }
-    res.status(200).json(result[0]);
+    const result = await replaceBookService(req.body, Number(req.params.id));
+    if (result === "BOOK_NOT_FOUND") return res.status(404).json({ error: "Book not found" });
+    if (result === "AUTHOR_NOT_FOUND") return res.status(404).json({ error: "Author not found" });
+    res.status(200).json(result);
 }
 
 export async function update(req: Request, res: Response) {
-    const result = await patchBook(req.body.available, Number(req.params.id));
-    if (result.length === 0) {
-        return res.status(404).json({ error: 'Book not found' });
-    }
-    res.status(200).json(result[0]);
+    const result = await updateBookService(req.body, Number(req.params.id));
+    if (result === "BOOK_NOT_FOUND") return res.status(404).json({ error: "Book not found" });
+    if (result === "AUTHOR_NOT_FOUND") return res.status(404).json({ error: "Author not found" });
+
+    res.status(200).json(result);
 }
-
 export async function remove(req: Request, res: Response) {
-    const deleted = await deleteBook(Number(req.params.id));
-
-    if (!deleted) {
-        return res.status(404).json({ error: 'Book not found' });
-    }
+    const result = await deleteBookService(Number(req.params.id));
+    if (result === "BOOK_NOT_FOUND") return res.status(404).json({ error: "Book not found" });
+    if (result === "BOOK_HAS_LOANS") return res.status(409).json({ error: "Book has loans" });
     res.status(204).send();
 }

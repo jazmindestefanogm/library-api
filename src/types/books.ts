@@ -14,8 +14,9 @@ export interface NewBook {
 
 export type UpdateBook = Partial<NewBook>;
 
+
 export interface BookFilters {
-	title: string;
-	available: boolean;
-	author_id: number;
+	title?: string;
+	available?: boolean;
+	author_id?: number;
 }

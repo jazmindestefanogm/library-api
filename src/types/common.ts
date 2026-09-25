@@ -5,7 +5,7 @@ export interface Pagination {
 
 export interface Page<T> {
     data: T[];
-    total: number;
+    total?: number;
     page: number;
     limit: number;
 }
